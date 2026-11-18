@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AeroSense IoT – Live Demo</title>
+<style>
+:root{--bg:#f1f7fb;--card:#fff;--tx:#172033;--mu:#667085;--ln:#e5e7eb;--soft:#f8fafc;--sh:0 14px 38px rgba(15,23,42,.10);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#131c2e;--tx:#e5eaf3;--mu:#94a3b8;--ln:#26324a;--soft:#18233a;--sh:0 14px 38px rgba(0,0,0,.4)}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Arial,Helvetica,sans-serif}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;padding:22px 16px;background:linear-gradient(180deg,#0f172a,#111827);color:#fff}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:28px}
+.bi{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#22d3ee,#2563eb,#16a34a);font-size:22px}
+.brand h1{margin:0;font-size:18px}.brand p{margin:4px 0 0;color:#94a3b8;font-size:12px}
+nav button{width:100%;text-align:left;border:0;background:none;color:#cbd5e1;padding:12px;margin:5px 0;border-radius:14px;font-size:14px;cursor:pointer}
+nav button.on,nav button:hover{background:rgba(255,255,255,.1);color:#fff}
+.foot{position:absolute;left:16px;right:16px;bottom:20px;padding:14px;border-radius:16px;background:rgba(255,255,255,.08);font-size:12px;color:#94a3b8;line-height:1.6}
+.foot b{display:block;color:#bbf7d0;margin-bottom:4px}.foot strong{color:#fff;display:block}
+main{padding:26px;min-width:0}.pg{display:none}.pg.on{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.top h2{margin:0;font-size:30px;letter-spacing:-.03em}.top p{margin:6px 0 0;color:var(--mu)}
+.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;background:var(--card);color:var(--tx);box-shadow:var(--sh)}
+.pri{background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff}.gr{background:#dcfce7;color:#166534;box-shadow:none}.rd{background:#fee2e2;color:#991b1b;box-shadow:none}
+.hero{display:grid;grid-template-columns:330px 1fr;gap:20px}
+.iaq{border-radius:30px;padding:26px;color:#fff;text-align:center;background:radial-gradient(circle at 80% 15%,rgba(34,211,238,.35),transparent 36%),linear-gradient(135deg,#0f172a,#1e3a8a);box-shadow:var(--sh)}
+.iaq small{color:#bae6fd;font-weight:800;letter-spacing:.14em}
+.gauge{width:200px;height:200px;border-radius:50%;margin:22px auto;display:grid;place-items:center;position:relative}
+.gauge:before{content:"";position:absolute;inset:17px;border-radius:50%;background:#172554}
+.gauge div{position:relative}.gauge b{font-size:56px;letter-spacing:-.06em;display:block;line-height:1}.gauge i{font-style:normal;color:#bae6fd;font-size:12px;letter-spacing:.16em;font-weight:800}
+.iaq h3{margin:0 0 10px;font-size:26px}.iaq p{margin:0;color:#dbeafe;font-size:14px;line-height:1.6}
+.pill{display:inline-block;margin-top:18px;padding:10px 14px;border-radius:99px;background:rgba(255,255,255,.12);font-size:13px;font-weight:800}
+.stack{display:grid;gap:16px;align-content:start}
+.g3,.g4{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.tile{background:var(--card);border-radius:24px;padding:20px;box-shadow:var(--sh);border:1px solid var(--ln);position:relative;overflow:hidden}
+.tile:after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:var(--a);opacity:.13}
+.ti{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:var(--a);font-weight:900;border:1px solid var(--ln);background:var(--soft);margin-bottom:12px;font-size:14px}
+.tt{color:var(--mu);font-weight:800;margin-bottom:8px}.tv{display:flex;align-items:flex-end;gap:7px}.tv b{font-size:40px;letter-spacing:-.06em;line-height:.95}.tv span{color:var(--mu);font-weight:800;font-size:13px;margin-bottom:3px}
+.tb{display:inline-block;margin-top:12px;padding:7px 12px;border-radius:99px;font-size:12px;font-weight:800}
+.good{background:#dcfce7;color:#166534}.mod{background:#fef3c7;color:#92400e}.bad{background:#fee2e2;color:#991b1b}.inf{background:#dbeafe;color:#1d4ed8}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+.sb{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:15px;box-shadow:var(--sh)}.sb span{display:block;color:var(--mu);font-size:11px;font-weight:800;text-transform:uppercase;margin-bottom:6px}.sb strong{font-size:19px}
+.panel{background:var(--card);border:1px solid var(--ln);border-radius:24px;box-shadow:var(--sh);overflow:hidden;margin-top:20px}
+.ph{padding:18px 20px;border-bottom:1px solid var(--ln);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ph h3{margin:0}.ph p{margin:4px 0 0;color:var(--mu);font-size:13px}
+.rg{display:flex;gap:6px;flex-wrap:wrap}.rb{border:1px solid var(--ln);background:var(--card);color:var(--mu);padding:8px 12px;border-radius:99px;font-size:12px;font-weight:800;cursor:pointer}.rb.on{background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;border-color:transparent}
+.chart{position:relative;height:380px;margin:18px;border:1px solid var(--ln);border-radius:18px;background:linear-gradient(to top,rgba(148,163,184,.18) 1px,transparent 1px);background-size:100% 64px}
+.chart svg{width:100%;height:100%;display:block}
+.tip{position:absolute;min-width:150px;padding:10px 12px;border-radius:12px;background:#0f172a;color:#fff;font-size:12px;pointer-events:none;opacity:0;transform:translate(-50%,-115%)}.tip.on{opacity:1}.tip strong{display:block;margin-bottom:6px;color:#e0f2fe}.tip div{display:flex;justify-content:space-between;gap:14px;margin:3px 0}
+.lg{display:flex;gap:14px;padding:0 20px 18px;color:var(--mu);font-size:13px;font-weight:700}.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:var(--c)}
+.cmf{display:grid;grid-template-columns:260px 1fr;gap:22px;padding:24px;align-items:center}
+.cm{width:180px;height:180px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;position:relative}.cm:before{content:"";position:absolute;inset:15px;border-radius:50%;background:var(--card)}.cm b{position:relative;font-size:40px}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:14px}.mi{background:var(--soft);border:1px solid var(--ln);border-radius:16px;padding:18px}.mi span{font-size:12px;color:var(--mu);font-weight:800}.mi strong{display:block;margin-top:8px;font-size:22px}
+.lt{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:16px 20px;background:var(--soft);border-bottom:1px solid var(--ln)}
+.lt select,.lt input{padding:9px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-weight:700}
+.st{padding:8px 12px;border-radius:99px;font-size:13px;font-weight:800;background:#fee2e2;color:#991b1b}.st.run{background:#dcfce7;color:#166534}
+.tw{overflow-x:auto;max-height:420px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:12px 18px;text-align:left;border-bottom:1px solid var(--ln);font-size:14px}th{background:var(--soft);color:var(--mu);font-size:11px;text-transform:uppercase;position:sticky;top:0}
+.ag{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}.al{padding:18px;display:grid;gap:12px}
+.a{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:var(--soft);border:1px solid var(--ln);border-radius:16px;padding:14px}.a em{font-style:normal;font-size:22px}.a strong{display:block}.a span{color:var(--mu);font-size:13px}
+.a b{padding:6px 11px;border-radius:99px;font-size:12px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px}.sg label{display:block;font-size:12px;font-weight:800;color:var(--mu);margin-bottom:6px}.sg input{width:100%;padding:9px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-weight:700}
+.am{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:6px}
+@media(max-width:1150px){.hero,.ag,.cmf{grid-template-columns:1fr}.g3,.g4,.strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.foot{position:static;margin-top:18px}}
+@media(max-width:560px){main{padding:16px}.g3,.g4,.strip,.mg,.am,.sg{grid-template-columns:1fr}}
+
+/* Device connection gate */
+body.gated{overflow:hidden}
+#connectionGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:22px;background:radial-gradient(circle at 15% 15%,rgba(6,182,212,.18),transparent 32%),radial-gradient(circle at 85% 85%,rgba(37,99,235,.2),transparent 34%),#08111f;color:#eaf2ff}
+#connectionGate.hidden{display:none}
+.gate-card{width:min(100%,440px);padding:30px;border:1px solid rgba(148,163,184,.22);border-radius:26px;background:linear-gradient(160deg,rgba(22,34,55,.98),rgba(12,22,39,.98));box-shadow:0 28px 90px rgba(0,0,0,.42)}
+.gate-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:28px}
+.gate-logo{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,#22d3ee,#2563eb,#16a34a);box-shadow:0 8px 24px rgba(6,182,212,.22)}
+.gate-brand h1{font-size:21px;margin:0}.gate-brand p{margin:5px 0 0;color:#9fb0c8;font-size:11px;letter-spacing:.13em}
+.gate-kicker{text-align:center;color:#67e8f9;font-size:11px;font-weight:800;letter-spacing:.18em;margin:0 0 10px}
+.gate-card h2{text-align:center;font-size:27px;margin:0 0 9px}.gate-desc{text-align:center;color:#a9b8cc;font-size:14px;line-height:1.6;margin:0 0 25px}
+.gate-label{display:block;font-size:12px;font-weight:800;color:#cbd5e1;margin:0 0 8px;letter-spacing:.06em}
+#gateIp{width:100%;padding:14px 15px;border:1px solid #40516b;border-radius:12px;background:#0b1526;color:#fff;font-size:16px;outline:none}
+#gateIp:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+#connectBtn{width:100%;margin-top:13px;padding:14px;border:0;border-radius:12px;background:linear-gradient(135deg,#06b6d4,#2563eb);color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 10px 24px rgba(37,99,235,.24)}
+#connectBtn:disabled{opacity:.65;cursor:wait}
+.gate-status{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:18px;padding:11px 13px;border-radius:12px;background:rgba(148,163,184,.09);color:#aebdd0;font-size:13px;text-align:center}
+.gate-dot{width:9px;height:9px;border-radius:50%;background:#94a3b8;flex:none}
+.gate-status.online{color:#86efac}.gate-status.online .gate-dot{background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.12)}
+.gate-status.offline{color:#fca5a5}.gate-status.offline .gate-dot{background:#ef4444;box-shadow:0 0 0 5px rgba(239,68,68,.12)}
+#gateMessage{min-height:18px;margin:11px 0 0;text-align:center;color:#fca5a5;font-size:12px;line-height:1.5}
+.gate-foot{text-align:center;color:#71839d;font-size:11px;margin:22px 0 0}
+@media(max-width:480px){.gate-card{padding:24px 20px}.gate-card h2{font-size:24px}}
+</style></head><body class="gated">
+<section id="connectionGate" aria-label="Connect AeroSense device">
+ <div class="gate-card">
+  <div class="gate-brand"><div class="gate-logo">◌</div><div><h1>AeroSense IoT</h1><p>INDOOR AIR QUALITY MONITORING</p></div></div>
+  <p class="gate-kicker">DEVICE AUTHENTICATION</p>
+  <h2>Connect your device</h2>
+  <p class="gate-desc">Enter your ESP32 IP address to securely check its availability on your local network and open the monitoring dashboard.</p>
+  <label class="gate-label" for="gateIp">ESP32 IP ADDRESS</label>
+  <input id="gateIp" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="e.g. 192.168.1.100">
+  <button id="connectBtn" type="button">Connect to Dashboard</button>
+  <div id="gateStatus" class="gate-status"><span class="gate-dot"></span><span id="gateStatusText">Waiting for device address</span></div>
+  <p id="gateMessage" role="status" aria-live="polite"></p>
+  <p class="gate-foot">ESP32 · Local network connection · Simulated sensor data</p>
+ </div>
+</section>
+<div class="app">
+<aside>
+ <div class="brand"><div class="bi">◌</div><div><h1>AeroSense IoT</h1><p>PM &amp; air quality monitor</p></div></div>
+ <nav id="nav"><button class="on" data-p="dash">🌫 Dashboard</button><button data-p="pm">📊 PM Readings</button><button data-p="env">🌡 Environment</button><button data-p="hist">🕒 History</button><button data-p="alr">⚠ Alerts</button></nav>
+ <div class="foot"><b id="deviceStatus">● Device Online</b><strong>AeroSense</strong><br>Device IP: <span id="deviceIP">--</span></div>
+</aside>
+<main>
+<section class="pg on" id="dash">
+ <div class="top"><div><h2>PM &amp; Air Quality Monitoring</h2><p>Live data from AeroSense Device</p></div></div>
+ <div class="hero">
+  <div class="iaq"><small>INDOOR AIR QUALITY</small>
+   <div class="gauge" id="gauge"><div><b id="iaqV">--</b><i>IAQ</i></div></div>
+   <h3 id="iaqL">Loading…</h3><p>Live IAQ reading from MQ135, DHT11 Sensors.</p><span class="pill" id="iaqS">● Connecting</span></div>
+  <div class="stack"><div class="g3" id="dPm"></div><div class="g4" id="dEnv"></div></div>
+ </div>
+ <div class="strip"><div class="sb"><span>Device</span><strong id="deviceStatusCard">Online</strong></div><div class="sb"><span>PMS7003</span><strong>Active</strong></div><div class="sb"><span>BME680</span><strong>Stabilised</strong></div><div class="sb"><span>Last update</span><strong id="lu">--</strong></div></div>
+</section>
+<section class="pg" id="pm">
+ <div class="top"><div><h2>PM Readings</h2><p>Live readings with trend graph.</p></div></div>
+ <div class="g3" id="pPm"></div>
+ <div class="panel"><div class="ph"><div><h3>Particle Matter Trend</h3><p>Hover to see PM values.</p></div>
+  <div class="rg" id="rg"><button class="rb on" data-r="900000">15 min</button><button class="rb" data-r="3600000">1 hour</button><button class="rb" data-r="10800000">3 hours</button><button class="rb" data-r="21600000">6 hours</button><button class="rb" data-r="43200000">12 hours</button><button class="rb" data-r="86400000">24 hours</button></div></div>
+  <div class="chart" id="chart"><div class="tip" id="tip"></div>
+   <svg viewBox="0 0 900 430" preserveAspectRatio="none"><defs><linearGradient id="f25" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f97316" stop-opacity=".3"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient></defs>
+   <path id="a25" fill="url(#f25)"/><path id="l1" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/><path id="l25" fill="none" stroke="#f97316" stroke-width="4" stroke-linecap="round"/><path id="l10" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+   <line id="hl" y1="24" y2="406" stroke="#64748b" stroke-dasharray="5 5" opacity="0"/><circle id="h1" r="6" fill="#22c55e" opacity="0"/><circle id="h25" r="6" fill="#f97316" opacity="0"/><circle id="h10" r="6" fill="#ef4444" opacity="0"/></svg></div>
+  <div class="lg"><span><i style="--c:#22c55e"></i>PM1.0</span><span><i style="--c:#f97316"></i>PM2.5</span><span><i style="--c:#ef4444"></i>PM10</span></div></div>
+</section>
+<section class="pg" id="env">
+ <div class="top"><div><h2>Environment</h2><p>DHT11 final readings.</p></div></div>
+ <div class="g3" id="eEnv"></div>
+ <div class="panel"><div class="cmf"><div style="text-align:center"><div class="cm" id="cm"><b id="cs">--</b></div><h3 id="cl" style="margin:0 0 6px">--</h3><p style="margin:0;color:var(--mu)">Based on temperature and humidity.</p></div>
+  <div class="mg"><div class="mi"><span>CO2 EQUIVALENT</span><strong id="mc">--</strong></div><div class="mi"><span>VOC EQUIVALENT</span><strong id="mv">--</strong></div><div class="mi"><span>CALIBRATION</span><strong>Stabilised</strong></div><div class="mi"><span>UPTIME</span><strong id="up">--</strong></div></div></div></div>
+</section>
+<section class="pg" id="hist">
+ <div class="top"><div><h2>History &amp; Data Logger</h2><p>Log readings at a chosen interval.</p></div><button class="btn pri" id="addB">Add Log</button></div>
+ <div class="panel" style="margin-top:0"><div class="ph"><div><h3>Data Logger Controls</h3><p>Start automatic logging, choose interval or clear records.</p></div><span class="st" id="st">● Logger Stopped</span></div>
+  <div class="lt"><label>Interval <select id="iv"><option value="2000">2 seconds</option><option value="5000" selected>5 seconds</option><option value="10000">10 seconds</option><option value="30000">30 seconds</option></select></label>
+   <span>Records: <b id="rc">0</b></span><button class="btn gr" id="sB">Start</button><button class="btn rd" id="xB">Stop</button><button class="btn" id="cB">Clear</button></div>
+  <div class="tw"><table><thead><tr><th>Time</th><th>PM1.0</th><th>PM2.5</th><th>PM10</th><th>Temp</th><th>Humidity</th><th>IAQ</th><th>CO2</th><th>VOC</th></tr></thead><tbody id="lb"></tbody></table></div></div>
+</section>
+<section class="pg" id="alr">
+ <div class="top"><div><h2>Alerts &amp; Settings</h2><p>Live warnings with adjustable thresholds.</p></div></div>
+ <div class="am"><div class="sb"><span>Active alerts</span><strong id="ac">0</strong></div><div class="sb"><span>Highest level</span><strong id="ah">Normal</strong></div><div class="sb"><span>Last check</span><strong id="ak">--</strong></div></div>
+ <div class="ag"><div class="panel"><div class="ph"><div><h3>Smart Air Quality Alerts</h3><p>Generated from PM, IAQ, CO2, VOC, temperature and humidity.</p></div></div><div class="al" id="ab"></div></div>
+  <div class="panel"><div class="ph"><div><h3>Alert Threshold Settings</h3><p>Change values to control when alerts appear.</p></div></div>
+   <div class="sg" id="sg"></div></div></div>
+</section>
+</main></div>
+<script>
+const $=id=>document.getElementById(id);
+const PMI='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M4 8c1.5-1.4 3-1.4 4.5 0s3 1.4 4.5 0 3-1.4 4.5 0"/><path d="M4 12c1.5-1.4 3-1.4 4.5 0s3 1.4 4.5 0 3-1.4 4.5 0"/><path d="M4 16c1.5-1.4 3-1.4 4.5 0s3 1.4 4.5 0 3-1.4 4.5 0"/></svg>';
+const tile=(p,k,n,u,c,i)=>`<div class="tile" style="--a:${c}"><div class="ti">${i}</div><div class="tt">${n}</div><div class="tv"><b id="${p}${k}">--</b><span>${u}</span></div><div class="tb good" id="${p}${k}B">--</div></div>`;
+const PM=[['pm1','PM1.0','µg/m³','#22c55e'],['pm25','PM2.5','µg/m³','#f97316'],['pm10','PM10','µg/m³','#ef4444']];
+$('dPm').innerHTML=PM.map(x=>tile('d_',x[0],x[1],x[2],x[3],PMI)).join('');
+$('pPm').innerHTML=PM.map(x=>tile('p_',x[0],x[1],x[2],x[3],PMI)).join('');
+$('dEnv').innerHTML=tile('d_','temp','Temp','°C','#f97316','°C')+tile('d_','hum','Hum','%','#16a34a','%')+tile('d_','co2','CO2','ppm','#0ea5e9','CO2')+tile('d_','voc','VOC','ppm','#14b8a6','VOC');
+$('eEnv').innerHTML=tile('e_','temp','Temperature','°C','#f97316','°C')+tile('e_','hum','Humidity','%','#16a34a','%')+tile('e_','iaq','IAQ','','#0ea5e9','IAQ');
+/* nav */
+$('nav').onclick=e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('.pg').forEach(s=>s.classList.remove('on'));$(b.dataset.p).classList.add('on');document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on')};
+/* simulator */
+const T0=Date.now();let S={pm25:16,t:22.5,h:52,co2:640,voc:.42,iaq:150},latest=null,hist=[],logs=[],range=900000,timer=null;
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),rn=()=>Math.random()-.5;
+function sim(){S.pm25=cl(S.pm25+rn()*3.2+(Math.random()<.025?18:0)-(S.pm25>35?2.5:0)+(16-S.pm25)*.02,3,90);S.t=cl(S.t+rn()*.12,20,25);S.h=cl(S.h+rn()*.5,28,75);S.co2=cl(S.co2+rn()*40+(S.pm25>30?15:0)+(600-S.co2)*.02,420,1800);S.voc=cl(S.voc+rn()*.05+(.4-S.voc)*.03,.1,2.4);S.iaq=cl(S.iaq+rn()*1.8,140,160);
+ return{pm1:Math.round(S.pm25*.55+rn()),pm25:Math.round(S.pm25),pm10:Math.round(S.pm25*1.55+3+rn()*2),temperature:S.t,humidity:S.h,iaq:S.iaq,co2:S.co2,voc:S.voc}}
+for(let i=1440;i>0;i--){const d=sim();hist.push({t:T0-i*60000,pm1:Math.max(1,d.pm1),pm25:d.pm25,pm10:d.pm10})}
+/* helpers */
+const s25=v=>v<=12?'Good':v<=35?'Moderate':v<=55?'Poor':'Unhealthy',s1=v=>v<=10?'Good':v<=25?'Moderate':v<=40?'Poor':'Unhealthy',s10=v=>v<=54?'Good':v<=154?'Moderate':v<=254?'Poor':'Unhealthy';
+const cls=s=>s==='Good'?'good':s==='Poor'||s==='Moderate'?'mod':'bad';
+const iaqS=v=>v<=50?'Good':v<=100?'Moderate':v<=150?'Poor':v<=200?'Unhealthy':'Very Unhealthy';
+const iaqC=v=>v<=50?'#16a34a':v<=100?'#84cc16':v<=150?'#eab308':v<=200?'#f97316':v<=300?'#ef4444':'#991b1b';
+function set(id,v){const e=$(id);if(e)e.textContent=v}
+function badge(id,t,c){const e=$(id);if(e){e.className='tb '+c;e.textContent=t}}
+/* update */
+function upd(d){
+ latest=d;const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ const v={pm1:d.pm1,pm25:d.pm25,pm10:d.pm10,temp:d.temperature.toFixed(1),hum:Math.round(d.humidity),co2:Math.round(d.co2),voc:d.voc.toFixed(2),iaq:Math.round(d.iaq)};
+ ['d_','p_','e_'].forEach(p=>{for(const k in v)set(p+k,v[k])});
+ const a=[s1(d.pm1),s25(d.pm25),s10(d.pm10)];
+ ['d_','p_'].forEach(p=>['pm1','pm25','pm10'].forEach((k,i)=>badge(p+k+'B',a[i],cls(a[i]))));
+ const tm=d.temperature>=18&&d.temperature<=32;
+ badge('d_tempB',tm?'Stable':'Check',tm?'good':'mod');badge('e_tempB',tm?'Stable':'Check',tm?'good':'mod');
+ const hm=d.humidity>=30&&d.humidity<=70;badge('d_humB',hm?'Comfort':'Check',hm?'good':'mod');badge('e_humB',hm?'Comfort':'Check',hm?'good':'mod');
+ badge('d_co2B','BSEC',d.co2>1000?'mod':'good');badge('d_vocB','BSEC',d.voc>1?'mod':'good');
+ const st=iaqS(d.iaq),col=iaqC(d.iaq),deg=cl(d.iaq,0,500)/500*360;
+ badge('e_iaqB',st,cls(st==='Moderate'?'Moderate':st));
+ set('iaqV',v.iaq);set('iaqL',st+' Air Quality');set('iaqS','● Current status: '+st);
+ $('gauge').style.background=`conic-gradient(${col} 0deg ${deg}deg,rgba(255,255,255,.16) ${deg}deg 360deg)`;
+ set('lu',now);set('mc',v.co2+' ppm');set('mv',v.voc+' ppm');set('up',Math.round((Date.now()-T0)/1000)+'s');
+ const c=cl(100-Math.abs(d.temperature-25)*5-Math.abs(d.humidity-50)*.6,0,100);
+ set('cs',Math.round(c)+'%');set('cl',c>75?'Very Comfortable':c>60?'Comfortable':c>40?'Needs Improvement':'Uncomfortable');
+ $('cm').style.background=`conic-gradient(${c>60?'#16a34a':'#f97316'} 0 ${c*3.6}deg,rgba(148,163,184,.3) ${c*3.6}deg 360deg)`;
+ alerts(d);
+ const l=hist[hist.length-1];if(Date.now()-l.t>=5000)hist.push({t:Date.now(),pm1:d.pm1,pm25:d.pm25,pm10:d.pm10});
+ chartR()}
+/* ESP32 connection gate: dashboard is visible only while the ESP32 responds. */
+const ESP_HOST_KEY='aerosense_esp32_host';
+const gate=$('connectionGate');
+const gateIp=$('gateIp');
+const connectBtn=$('connectBtn');
+const gateStatus=$('gateStatus');
+const gateStatusText=$('gateStatusText');
+const gateMessage=$('gateMessage');
+let espHost='10.32.164.45';
+let deviceOnline=false;
+let connectionStarted=false;
+let reconnectTimer=null;
+let checking=false;
+let wasConnected=false;
+try{espHost=localStorage.getItem(ESP_HOST_KEY)||'';}catch(e){}
+if(espHost)gateIp.value=espHost;
+function cleanEspHost(value){
+  return String(value||'').trim().replace(/^https?:\/\//i,'').replace(/\/$/,'').replace(/:\d+$/,'');
+}
+function setGateStatus(state,message){
+  gateStatus.className='gate-status'+(state==='online'?' online':state==='offline'?' offline':'');
+  gateStatusText.textContent=message;
+}
+function showGate(message,state='idle'){
+  document.body.classList.add('gated');
+  gate.classList.remove('hidden');
+  setGateStatus(state,state==='offline'?'Device offline':state==='checking'?'Checking ESP32 connection':'Waiting for device address');
+  gateMessage.textContent=message||'';
+  connectBtn.disabled=false;
+  connectBtn.textContent=state==='offline'?'Reconnect to Dashboard':'Connect to Dashboard';
+}
+function showDashboard(ip){
+  deviceOnline=true;wasConnected=true;
+  gate.classList.add('hidden');
+  document.body.classList.remove('gated');
+  set('deviceStatus','● Device Online');
+  const status=$('deviceStatus');if(status)status.style.color='#bbf7d0';
+  set('deviceIP',ip||espHost);
+}
+function hideDashboardForOffline(){
+  deviceOnline=false;
+  showGate('The ESP32 is not responding. Check its power and Wi-Fi connection. The dashboard will reopen automatically when the device is reachable.','offline');
+  set('deviceStatus','● Device Offline');
+  const status=$('deviceStatus');if(status)status.style.color='#fecaca';
+  set('deviceIP','Not connected');
+}
+async function pingEsp32(){
+  if(!espHost||checking)return false;
+  checking=true;
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),1800);
+    const response=await fetch('http://'+espHost+'/status?ts='+Date.now(),{method:'GET',cache:'no-store',mode:'cors',signal:controller.signal});
+    clearTimeout(timeout);
+    if(!response.ok)throw new Error('HTTP '+response.status);
+    const status=await response.json();
+    if(status.online!==true)throw new Error('ESP32 reports Wi-Fi offline');
+    showDashboard(status.ip||espHost);
+    gateMessage.textContent='';
+    setGateStatus('online','ESP32 connected');
+    return true;
+  }catch(error){
+    return false;
+  }finally{checking=false;}
+}
+async function connectionCheck(){
+  if(!connectionStarted||!espHost)return;
+
+  const online=await pingEsp32();
+
+  if(online){
+    // Keep polling while online. Stopping the timer here caused the dashboard
+    // to miss later ESP32 power loss or Wi-Fi disconnections.
+    if(!reconnectTimer){
+      reconnectTimer=setInterval(connectionCheck,2000);
+    }
+  }else if(wasConnected){
+    // Hide the complete dashboard immediately after a failed status check.
+    // Keep the same polling timer alive so reconnecting the ESP32 restores it.
+    hideDashboardForOffline();
+    connectBtn.disabled=false;
+    connectBtn.textContent='Reconnect to Dashboard';
+  }else{
+    // First connection attempt failed: remain on the IP entry screen and
+    // continue checking so the dashboard can open as soon as the device appears.
+    setGateStatus('offline','Device not reachable');
+    gateMessage.textContent='Could not reach '+espHost+'. Verify the IP address and ensure your laptop and ESP32 are on the same Wi-Fi network. Retrying automatically...';
+    connectBtn.disabled=false;
+    connectBtn.textContent='Try Again';
+    if(!reconnectTimer){
+      reconnectTimer=setInterval(connectionCheck,2000);
+    }
+  }
+}
+connectBtn.addEventListener('click',async()=>{
+  const value=cleanEspHost(gateIp.value);
+  if(!value){gateMessage.textContent='Please enter the ESP32 IP address.';gateIp.focus();return;}
+  // Accept a hostname or IPv4 address, but reject URL paths and spaces.
+  if(/[\s/]/.test(value)){gateMessage.textContent='Enter only the IP address or hostname, without http:// or a path.';gateIp.focus();return;}
+  espHost=value;connectionStarted=true;wasConnected=false;
+  try{localStorage.setItem(ESP_HOST_KEY,espHost);}catch(e){}
+  connectBtn.disabled=true;connectBtn.textContent='Connecting...';
+  gateMessage.textContent='Checking '+espHost+' ...';
+  setGateStatus('checking','Checking ESP32 connection');
+  const online=await pingEsp32();
+  if(online){wasConnected=true;connectBtn.disabled=false;}
+  else{
+    setGateStatus('offline','Device not reachable');
+    gateMessage.textContent='Connection failed. Check the IP address, ESP32 power and Wi-Fi, then try again.';
+    connectBtn.disabled=false;connectBtn.textContent='Try Again';
+  }
+  if(reconnectTimer)clearInterval(reconnectTimer);
+  reconnectTimer=setInterval(connectionCheck,2000);
+});
+gateIp.addEventListener('keydown',e=>{if(e.key==='Enter')connectBtn.click();});
+// Start at the connection screen every time. A saved address is prefilled, never silently trusted.
+showGate('Enter the ESP32 IP address to continue.');
+
+/* alerts */
+const TH=[['pm25w','PM2.5 warning',35],['pm25d','PM2.5 danger',55],['pm10w','PM10 warning',80],['pm10d','PM10 danger',150],['iaqw','IAQ warning',100],['iaqd','IAQ danger',200],['co2w','CO2 warning ppm',1000],['co2d','CO2 danger ppm',2000]];
+$('sg').innerHTML=TH.map(t=>`<div><label>${t[1]}</label><input type="number" id="t_${t[0]}" value="${t[2]}"></div>`).join('');
+const tv=k=>Number($('t_'+k).value);
+function alerts(d){
+ let h='',n=0,hi='Normal';
+ const add=(i,t,m,l)=>{h+=`<div class="a"><em>${i}</em><div><strong>${t}</strong><span>${m}</span></div><b class="${l==='Danger'?'bad':l==='Warning'?'mod':l==='Good'?'good':'inf'}">${l}</b></div>`;if(l==='Warning'||l==='Danger')n++;if(l==='Danger')hi='Danger';else if(l==='Warning'&&hi!=='Danger')hi='Warning'};
+ const chk=(val,w,dg,ic,nm,u)=>{if(val>=tv(dg))add(ic,nm+' danger level',nm+' is '+u+'. Improve ventilation or filtration.','Danger');else if(val>=tv(w))add(ic,nm+' warning',nm+' is '+u+'. Above your warning limit.','Warning')};
+ chk(d.pm25,'pm25w','pm25d','🚨','PM2.5',d.pm25+' µg/m³');chk(d.pm10,'pm10w','pm10d','🌪️','PM10',d.pm10+' µg/m³');chk(d.iaq,'iaqw','iaqd','🛑','IAQ',Math.round(d.iaq));chk(d.co2,'co2w','co2d','💨','CO2',Math.round(d.co2)+' ppm');
+ if(d.voc>=1)add('🧴','VOC warning','VOC equivalent is '+d.voc.toFixed(2)+' ppm.','Warning');
+ if(!n)add('✅','All readings normal','Values are within the configured limits.','Good');
+ add('📡','Device connected','ESP32 connectivity verified on the local network.','Info');
+ $('ab').innerHTML=h;set('ac',n);set('ah',hi);set('ak',new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}))}
+/* chart */
+function yv(v,m){return 394-v/m*360}
+function pth(p){let d=`M${p[0].x},${p[0].y}`;for(let i=1;i<p.length;i++){const a=p[i-1],b=p[i],m=(a.x+b.x)/2;d+=` C${m},${a.y} ${m},${b.y} ${b.x},${b.y}`}return d}
+let pts=[];
+function chartR(){
+ const from=Date.now()-range;let s=hist.filter(p=>p.t>=from),out=[];
+ if(s.length>120){const z=Math.ceil(s.length/120);for(let i=0;i<s.length;i+=z){const g=s.slice(i,i+z),av=k=>Math.round(g.reduce((a,x)=>a+x[k],0)/g.length*10)/10;out.push({t:g[g.length>>1].t,pm1:av('pm1'),pm25:av('pm25'),pm10:av('pm10')})}}else out=s;
+ if(out.length<2)return;
+ const m=Math.max(1,...out.flatMap(x=>[x.pm1,x.pm25,x.pm10]))*1.15,sec=range<=3600000;
+ pts=out.map((d,i)=>({...d,x:24+i/(out.length-1)*852,a:yv(d.pm1,m),b:yv(d.pm25,m),c:yv(d.pm10,m),lb:new Date(d.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:sec?'2-digit':undefined})}));
+ const p1=pth(pts.map(p=>({x:p.x,y:p.a}))),p25=pth(pts.map(p=>({x:p.x,y:p.b}))),p10=pth(pts.map(p=>({x:p.x,y:p.c})));
+ $('l1').setAttribute('d',p1);$('l25').setAttribute('d',p25);$('l10').setAttribute('d',p10);$('a25').setAttribute('d',p25+' L876,394 L24,394 Z')}
+$('rg').onclick=e=>{const b=e.target.closest('.rb');if(!b)return;range=Number(b.dataset.r);document.querySelectorAll('.rb').forEach(x=>x.classList.remove('on'));b.classList.add('on');chartR()};
+$('chart').onmousemove=e=>{if(!pts.length)return;const r=$('chart').querySelector('svg').getBoundingClientRect(),x=(e.clientX-r.left)/r.width*900;
+ let n=pts[0],m=1e9;pts.forEach(p=>{const q=Math.abs(p.x-x);if(q<m){m=q;n=p}});
+ $('hl').setAttribute('x1',n.x);$('hl').setAttribute('x2',n.x);$('hl').setAttribute('opacity',1);
+ [['h1',n.a],['h25',n.b],['h10',n.c]].forEach(a=>{const el=$(a[0]);el.setAttribute('cx',n.x);el.setAttribute('cy',a[1]);el.setAttribute('opacity',1)});
+ const t=$('tip');t.innerHTML=`<strong>${n.lb}</strong><div><span>PM1.0</span><b>${n.pm1}</b></div><div><span>PM2.5</span><b>${n.pm25}</b></div><div><span>PM10</span><b>${n.pm10}</b></div>`;
+ t.style.left=n.x/900*r.width+'px';t.style.top=Math.max(90,Math.min(n.a,n.b,n.c)/430*r.height)+'px';t.classList.add('on')};
+$('chart').onmouseleave=()=>{$('tip').classList.remove('on');['hl','h1','h25','h10'].forEach(i=>$(i).setAttribute('opacity',0))};
+/* logger */
+function addLog(){if(!latest)return;const d=latest;
+ $('lb').insertAdjacentHTML('afterbegin',`<tr><td>${new Date().toLocaleTimeString()}</td><td>${d.pm1}</td><td>${d.pm25}</td><td>${d.pm10}</td><td>${d.temperature.toFixed(1)}°C</td><td>${d.humidity.toFixed(1)}%</td><td>${d.iaq.toFixed(1)}</td><td>${Math.round(d.co2)}</td><td>${d.voc.toFixed(2)}</td></tr>`);
+ if($('lb').children.length>500)$('lb').lastElementChild.remove();set('rc',$('lb').children.length)}
+$('addB').onclick=addLog;
+$('sB').onclick=()=>{if(timer)return;timer=setInterval(addLog,Number($('iv').value));$('st').className='st run';set('st','● Logger Running')};
+$('xB').onclick=()=>{clearInterval(timer);timer=null;$('st').className='st';set('st','● Logger Stopped')};
+$('cB').onclick=()=>{$('lb').innerHTML='';set('rc',0)};
+/* run */
+const tick=()=>upd(sim());tick();setInterval(tick,2000);
+</script></body></html>
+
